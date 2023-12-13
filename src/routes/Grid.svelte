@@ -4,25 +4,25 @@
     import {browser} from '$app/environment';
 
     let svg;
-    export let domain = { x: [-10, 10], y: [-10, 10] };
-    export let point = { x: 0, y: 0 };
+    export let domain = { x: [-10, 10], y: [-10, 10] }
+    export let point = { x: 0, y: 0 }
     export let label = {x: "X Axis", y: "Y Axis"}
     export let sizeLabel = {x: 20, y: 20}
     export let radius = 10
-    const width = 700;
-    const height = 700;
-    const margin = { top: 20, right: 30, bottom: 50, left: 50 }; // Adjusted for label space
+    const fixedDomain = {...domain}
+    const width = 700
+    const height = 700
+    const margin = { top: 20, right: 30, bottom: 50, left: 50 } // Adjusted for label space
 
     // Scales
     const xScale = d3.scaleLinear()
         .domain(domain.x) // Adjust these values based on desired boundaries
-        .range([margin.left, width - margin.right]);
+        .range([margin.left, width - margin.right])
 
     const yScale = d3.scaleLinear()
         .domain(domain.y) // Adjust these values based on desired boundaries
-        .range([height - margin.bottom, margin.top]);
+        .range([height - margin.bottom, margin.top])
     
-    let ScaledPoint = {x: xScale(point.x), y: yScale(point.y)};
 
     // Draw Cartesian Plane
     function drawCartesianPlane() {
@@ -98,15 +98,20 @@
     function handleKeyPress(event) {
         let zoomFactor; // Determines the zoom speed
         if (event.key === 'X' || event.key === 'x') {
-            event.key === 'x' ? zoomFactor = 0.7 : zoomFactor = 1.7;
+            event.key === 'x' ? zoomFactor = 0.5 : zoomFactor = 2;
             // Zoom on X-axis
             const range = (domain.x[1] - domain.x[0]) * zoomFactor;
-            domain.x = [point.x - range / 2, point.x + range / 2];
+            let lxRange = (point.x - range / 2 > Math.min(...fixedDomain.x)) ? point.x - range / 2 : Math.min(...fixedDomain.x);
+            let rxRange = (point.x + range / 2 < Math.max(...fixedDomain.x)) ? point.x + range / 2 : Math.max(...fixedDomain.x);
+            domain.x = [lxRange, rxRange];
+            
         } else if (event.key === 'Y' || event.key === 'y') {
-            event.key === 'y' ? zoomFactor = 0.7 : zoomFactor = 1.7;
+            event.key === 'y' ? zoomFactor = 0.5 : zoomFactor = 2;
             // Zoom on Y-axis
             const range = (domain.y[1] - domain.y[0]) * zoomFactor;
-            domain.y = [point.y - range / 2, point.y + range / 2];
+            let lyRange = (point.y - range / 2 > Math.min(...fixedDomain.y)) ? point.y - range / 2 : Math.min(...fixedDomain.y);
+            let ryRange = (point.y + range / 2 < Math.max(...fixedDomain.y)) ? point.y + range / 2 : Math.max(...fixedDomain.y);
+            domain.y = [lyRange,ryRange];
         }
 
         xScale.domain(domain.x);
