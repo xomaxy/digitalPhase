@@ -27,17 +27,18 @@
 </script>
 
 <main>
-  <input on:keydown={(e)=>{if (e.key == 'Enter'){point.x = e.target.value}}} value={point.x}>
-  <input on:keydown={(e)=>{if (e.key == 'Enter'){point.y = e.target.value}}} value={point.y}>
-  <Grid bind:point bind:domain {label} {sizeLabel} {radius}/>
-  
-
-</main>
-
-<!-- Plot all the values for dev proposes-->
 <p>{point.x} {point.y}</p>
 <p>Domain X</p>
 <p>{domain.x} </p>
 <p>Domain y</p>
 <p>{domain.y}</p>
+  <input on:keydown={(e)=>{if (e.key == 'Enter'){point.x = e.target.value}}} value={point.x}>
+  <input on:keydown={(e)=>{if (e.key == 'Enter'){point.y = e.target.value}}} value={point.y}>
+  <Grid bind:point bind:domain {label} {sizeLabel} {radius}/>
+  <Plot3d />
+
+</main>
+
+<!-- Plot all the values for dev proposes-->
+
 
