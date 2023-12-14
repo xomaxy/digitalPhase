@@ -1,7 +1,6 @@
 <script>
   // Data for grid example, bind for transversal communication
   import Grid from './Grid.svelte';
-  import Plot3d from './Plot3d.svelte';
 
   let point = { x:100, y: 3000 }; 
   let domain = {x:[0,1600], y:[0,60000]}
@@ -23,22 +22,25 @@
   
   $: checkBoundaries(point,domain);
 
-  // Data reading 
+  // Three js handle
+  import { Canvas } from '@threlte/core'
+  import Plot3d from './Plot3d.svelte'
+  let size = {width: 1000, height: 1000}
+
 </script>
 
 <main>
-<p>{point.x} {point.y}</p>
-<p>Domain X</p>
-<p>{domain.x} </p>
-<p>Domain y</p>
-<p>{domain.y}</p>
-  <input on:keydown={(e)=>{if (e.key == 'Enter'){point.x = e.target.value}}} value={point.x}>
-  <input on:keydown={(e)=>{if (e.key == 'Enter'){point.y = e.target.value}}} value={point.y}>
-  <Grid bind:point bind:domain {label} {sizeLabel} {radius}/>
-  <Plot3d />
-
+  <Canvas {size}>
+    <Plot3d />
+  </Canvas>
 </main>
-
-<!-- Plot all the values for dev proposes-->
-
-
+  
+  <p>{point.x} {point.y}</p>
+  <p>Domain X</p>
+  <p>{domain.x} </p>
+  <p>Domain y</p>
+  <p>{domain.y}</p>
+    <input on:keydown={(e)=>{if (e.key == 'Enter'){point.x = e.target.value}}} value={point.x}>
+    <input on:keydown={(e)=>{if (e.key == 'Enter'){point.y = e.target.value}}} value={point.y}>
+    <Grid bind:point bind:domain {label} {sizeLabel} {radius}/>
+    

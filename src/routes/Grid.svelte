@@ -10,8 +10,8 @@
     export let sizeLabel = {x: 20, y: 20}
     export let radius = 10
     const fixedDomain = {...domain}
-    const width = 700
-    const height = 700
+    const width = 300
+    const height = 300
     const margin = { top: 20, right: 30, bottom: 50, left: 50 } // Adjusted for label space
 
     // Scales
