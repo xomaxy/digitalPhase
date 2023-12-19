@@ -8,5 +8,6 @@ export default defineConfig({
 	},
 	ssr: {
 		noExternal: ['three']
-	}
+	},
+	base: process.env.BASE_PATH || ''
 });
