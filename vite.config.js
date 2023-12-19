@@ -1,6 +1,8 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 
+console.log(process.env.BASE_PATH)
+
 export default defineConfig({
 	plugins: [sveltekit()],
 	test: {
@@ -9,5 +11,5 @@ export default defineConfig({
 	ssr: {
 		noExternal: ['three']
 	},
-	base: process.env.BASE_PATH || ''
+	base: '/digitalPhase'
 });
