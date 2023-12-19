@@ -2,7 +2,6 @@
     import { onMount, onDestroy} from 'svelte';
     import * as d3 from 'd3';
     import {browser} from '$app/environment';
-    import { draw } from 'svelte/transition';
 
     let qData={data:[],check:false};
     d3.csv("/data/A4.csv").then(
