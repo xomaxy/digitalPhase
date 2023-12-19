@@ -5,7 +5,7 @@
     let data = [];
   
     onMount(async () => {
-      data = await d3.csv("/data/A4.csv");
+      data = await d3.csv("/digitalPhase/data/A4.csv");
     });
 
 let valor = 10000

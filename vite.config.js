@@ -11,5 +11,5 @@ export default defineConfig({
 	ssr: {
 		noExternal: ['three']
 	},
-	base: '/digitalPhase'
+	base: process.env.BASE_PATH || ''
 });

@@ -10,7 +10,7 @@ const config = {
 			fallback: '404.html'
 		}),
 		paths: {
-			base: '/digitalPhase' //!process.argv.includes('dev') ? '' : process.env.BASE_PATH
+			base: !process.argv.includes('dev') ? '' : process.env.BASE_PATH
 		},
 	},
 	preprocess: vitePreprocess()
