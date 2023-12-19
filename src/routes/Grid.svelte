@@ -5,7 +5,7 @@
     import { draw } from 'svelte/transition';
 
     let qData={data:[],check:false};
-    d3.csv("src/data/A4.csv").then(
+    d3.csv("/data/A4.csv").then(
             (data)=>{qData.data=data; qData.check=true; console.log(qData) ;drawCartesianPlane(qData);}
     )
 
