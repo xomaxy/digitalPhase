@@ -3,7 +3,7 @@
   import Grid from './Grid.svelte';
 
   let point = { x:100, y: 3000 }; 
-  let domain = {x:[0,1600], y:[0,60000]}
+  let domain = {x:[0,1600], y:[0,22000]}
 
   let label = {x: "Temperatura", y: "Pressure"}
   let sizeLabel = {x: 20, y: 20}
@@ -25,6 +25,7 @@
   // Three js handle
   import { Canvas } from '@threlte/core'
   import Plot3d from './Plot3d.svelte'
+    import FileReader from './FileReader.svelte';
   let size = {width: 1000, height: 1000}
 
 </script>
@@ -43,4 +44,6 @@
     <input on:keydown={(e)=>{if (e.key == 'Enter'){point.x = e.target.value}}} value={point.x}>
     <input on:keydown={(e)=>{if (e.key == 'Enter'){point.y = e.target.value}}} value={point.y}>
     <Grid bind:point bind:domain {label} {sizeLabel} {radius}/>
+
+  <FileReader />
     

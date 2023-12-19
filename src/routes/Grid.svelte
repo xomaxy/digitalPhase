@@ -1,7 +1,13 @@
 <script>
-    import { onMount, onDestroy } from 'svelte';
+    import { onMount, onDestroy} from 'svelte';
     import * as d3 from 'd3';
     import {browser} from '$app/environment';
+    import { draw } from 'svelte/transition';
+
+    let qData={data:[],check:false};
+    d3.csv("src/data/A4.csv").then(
+            (data)=>{qData.data=data; qData.check=true; console.log(qData) ;drawCartesianPlane(qData);}
+    )
 
     let svg;
     export let domain = { x: [-10, 10], y: [-10, 10] }
@@ -12,9 +18,8 @@
     const fixedDomain = {...domain}
     const width = 300
     const height = 300
-    const margin = { top: 20, right: 30, bottom: 50, left: 50 } // Adjusted for label space
+    const margin = { top: 20, right: 30, bottom: 50, left: 50 }
 
-    // Scales
     const xScale = d3.scaleLinear()
         .domain(domain.x) // Adjust these values based on desired boundaries
         .range([margin.left, width - margin.right])
@@ -22,14 +27,17 @@
     const yScale = d3.scaleLinear()
         .domain(domain.y) // Adjust these values based on desired boundaries
         .range([height - margin.bottom, margin.top])
-    
+
+    const curve = d3.line().curve(d3.curveNatural);
 
     // Draw Cartesian Plane
-    function drawCartesianPlane() {
+    function drawCartesianPlane(data) {
+        
+
         d3.select(svg).selectAll("*").remove();
         const svgEl = d3.select(svg)
             .attr("viewBox", `0 0 ${width} ${height}`)
-            .style("overflow", "visible");
+            .style("", "visible");
 
         // Axes
         const xAxis = g => g
@@ -58,6 +66,16 @@
         svgEl.append("g").call(xAxis);
         svgEl.append("g").call(yAxis);
 
+        if(typeof data !== 'undefined' && data.check){
+                console.log("what is data",data)
+                svgEl
+                    .append('path')
+                    .attr('d', curve(zip(data.data.map(d=>xScale(d['T'])),data.data.map(d=>yScale(d['P'])).slice(0,63))))
+                    .attr('stroke', 'black')
+                    .attr('fill', 'none')
+                    .attr("stroke-width", 3);
+        }
+        
 
         // Draggable Point
         svgEl.append("circle")
@@ -116,11 +134,12 @@
 
         xScale.domain(domain.x);
         yScale.domain(domain.y);
-        drawCartesianPlane(); // Redraw the plane with new domains
+        drawCartesianPlane(qData); // Redraw the plane with new domains
     }
 
     onMount( () => {
-        drawCartesianPlane();
+
+        drawCartesianPlane(qData);
         if (browser) {
             window.addEventListener('keypress', handleKeyPress);
         }
@@ -132,6 +151,17 @@
             window.removeEventListener('keypress', handleKeyPress);
         }
     });
+
+    function zip() {
+    var args = [].slice.call(arguments);
+    var shortest = args.length==0 ? [] : args.reduce(function(a,b){
+        return a.length<b.length ? a : b
+    });
+
+    return shortest.map(function(_,i){
+        return args.map(function(array){return array[i]})
+    });
+}
 </script>
 
 <svg bind:this={svg} width={width} height={height} class="border"></svg>
