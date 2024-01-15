@@ -15,8 +15,8 @@
     export let sizeLabel = {x: 20, y: 20}
     export let radius = 10
     const fixedDomain = {...domain}
-    const width = 300
-    const height = 300
+    const width = 500
+    const height = 500
     const margin = { top: 20, right: 30, bottom: 50, left: 50 }
 
     const xScale = d3.scaleLinear()

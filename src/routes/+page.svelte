@@ -1,49 +1,77 @@
 <script>
-  // Data for grid example, bind for transversal communication
-  import Grid from './Grid.svelte';
+    function zip() {
+    let args = [].slice.call(arguments);
+    let shortest = args.length==0 ? [] : args.reduce(function(a,b){
+        return a.length<b.length ? a : b
+    });
 
-  let point = { x:100, y: 3000 }; 
-  let domain = {x:[0,1600], y:[0,22000]}
-
-  let label = {x: "Temperatura", y: "Pressure"}
-  let sizeLabel = {x: 20, y: 20}
-  let radius = 10
-
-  // Data processing
-  let checkBoundaries = function(point,domain) {
-        if (!(point.x >= Math.min(...domain.x) && point.x <= Math.max(...domain.x))){
-        alert(`${label.x} out of bounds`);
-        point.x = Math.min(...domain.x)
-     } else if (!(point.y >= Math.min(...domain.y) && point.y <= Math.max(...domain.y))){
-        alert(`${label.y} out of bounds`);
-        point.y = Math.min(...domain.y)
-     }
+    return shortest.map(function(_,i){
+        return args.map(function(array){return array[i]})
+    });
     }
-  
-  $: checkBoundaries(point,domain);
+    import { onMount } from 'svelte';
+    import {csv, pointer, select} from "d3";
+    import D3, {svg, xScale, yScale} from "$D3/D3.svelte"
+    import Axis from "$D3/Axis.svelte"
+    import Path from "$D3/Path.svelte"
+    import Circle from "$D3/Circle.svelte"
 
-  // Three js handle
-  import { Canvas } from '@threlte/core'
-  import Plot3d from './Plot3d.svelte'
-    import FileReader from './FileReader.svelte';
-  let size = {width: 1000, height: 1000}
+    csv("/digitalPhase/data/A4.csv").then((data)=>{
+        let keys = Object.keys(data[0])
+        let ranges = keys.map((key) => {
+            
+            return {key, 
+                    min: Math.min(...data.map((d)=>d[key])),
+                    max: Math.max(...data.map((d)=>d[key]))
+                }
+            
+        })
+
+        console.log(ranges)
+    
+        axis = axis.map( a =>{
+            let range = ranges.find(r => r.key === a.id)
+            return {...a, domain:[range.min, range.max]}
+            
+        })
+
+        rawData = zip(...axis.map(a=>data.map(d=>d[a.id])))
+        
+    })
+
+    
+    let axis = [{type: "x", label:"Temperatura", id:"S1" , domain:undefined},
+                {type: "y", label:"Presión", id:"P", domain:undefined}];
+
+    let rawData = [];
+
+    let center = {x:undefined, y:undefined}
+
+    onMount(() => {
+        select(svg).on("click",(e)=>{  
+            center = {x: $xScale.invert(pointer(e)[0]), y:  $yScale.invert(pointer(e)[1])}
+            console.log(JSON.stringify(center))
+        })
+    })
 
 </script>
 
-<main>
-  <Canvas {size}>
-    <Plot3d />
-  </Canvas>
-</main>
-  
-  <p>{point.x} {point.y}</p>
-  <p>Domain X</p>
-  <p>{domain.x} </p>
-  <p>Domain y</p>
-  <p>{domain.y}</p>
-    <input on:keydown={(e)=>{if (e.key == 'Enter'){point.x = e.target.value}}} value={point.x}>
-    <input on:keydown={(e)=>{if (e.key == 'Enter'){point.y = e.target.value}}} value={point.y}>
-    <Grid bind:point bind:domain {label} {sizeLabel} {radius}/>
+<h1 class="text-5xl">
+    Digital Phase
+</h1>
 
-  <FileReader />
-    
+<D3 className="w-[500px] border-4 border-r-4 ">
+    {#each axis as a}
+        <Axis type="{a.type}" domain={{[`${a.type}`]: a.domain || [0,1]}} />
+    {/each}
+    <Path data={rawData}/>
+    <Circle {center}/>
+</D3>
+
+<input type="text" name="" id="" placeholder="x-coordinate" class="input p-2 boder-1 w-20">
+<input type="text" name="" id="" placeholder="y-coordinate" class="input p-2">
+
+
+
+
+
